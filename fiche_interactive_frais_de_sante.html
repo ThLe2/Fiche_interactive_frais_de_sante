@@ -129,6 +129,7 @@ footer{text-align:center;color:var(--gris-moyen);font-size:.8rem;padding:24px 18
     <div><label for="o-gar">Garantie du contrat (% BR)</label><input type="number" id="o-gar" value="150" step="10"></div>
     <div><label for="o-pf">Participation forfaitaire</label><input type="checkbox" id="o-pf" checked> 2 €</div>
     <div><label for="o-hp">Hors parcours de soins</label><input type="checkbox" id="o-hp"> minoration</div>
+    <div><label for="o-optam">Médecin non adhérent OPTAM</label><input type="checkbox" id="o-optam"> plafonnement</div>
   </div>
   <div class="res">
     <div><div class="k">Versé par la Sécurité sociale</div><div class="v" id="r-amo">—</div></div>
@@ -728,26 +729,46 @@ const ATELIERS = {
 };
 
 function OUTILS(){
-  var ids = ['o-frais','o-br','o-taux','o-gar','o-pf','o-hp'];
+  var ids = ['o-frais','o-br','o-taux','o-gar','o-pf','o-hp','o-optam'];
   function n(id){ var e=document.getElementById(id); return e.type==='checkbox'?e.checked:parseFloat(String(e.value).replace(',','.')); }
-  function eur(x){ return (Math.round(x*100)/100).toFixed(2).replace('.',',') + ' €'; }
+  function eur(x){ return (Math.round(x*100)/100).toFixed(2).replace('.',',') + ' \u20ac'; }
   function calc(){
     var frais=n('o-frais'), br=n('o-br'), taux=n('o-taux')/100, gar=n('o-gar')/100,
-        pf=n('o-pf'), hp=n('o-hp');
+        pf=n('o-pf'), hp=n('o-hp'), nonOptam=n('o-optam');
     if(isNaN(frais)||isNaN(br)||isNaN(taux)||isNaN(gar)) return;
-    var amoParcours = taux*br;
-    var minoration = hp ? Math.min(0.40*br, 10.60) : 0;
-    var amo = Math.max(0, amoParcours - minoration);
-    var verse = Math.max(0, amo - (pf?2:0));
-    var garTot = gar*br;
-    var amc = Math.max(0, Math.min(garTot - amoParcours, frais - amo));
-    var rac = Math.max(0, frais - verse - amc);
+
+    // 1. Securite sociale
+    var amoParcours = taux*br;                                   // remboursement si parcours respecte
+    var minoration  = hp ? Math.min(0.40*br, 10.60) : 0;         // 40 points de la base, plafonnes
+    var amo         = Math.max(0, amoParcours - minoration);
+    var verse       = Math.max(0, amo - (pf?2:0));               // participation forfaitaire retenue
+
+    // 2. Contrat : il complete la seule part qu'il a le droit de couvrir.
+    //    La minoration hors parcours n'entre jamais dans son assiette.
+    var garTot   = gar*br;
+    var plafonds = [garTot - amoParcours, frais - amoParcours];
+    if(nonOptam) plafonds.push((br - amoParcours) + br);         // TM + 100 % de la base sur les depassements
+    var amc = Math.max(0, Math.min.apply(null, plafonds));
+
+    // 3. Reste a charge
+    var rac      = Math.max(0, frais - verse - amc);
+    var depasNC  = Math.max(0, rac - (pf?2:0) - minoration);
+
     document.getElementById('r-amo').textContent = eur(verse);
     document.getElementById('r-amc').textContent = eur(amc);
     document.getElementById('r-rac').textContent = eur(rac);
-    var note = 'Garantie mobilisable : ' + eur(garTot) + ' (dont ' + eur(amoParcours) + ' déjà versés au titre de la Sécurité sociale).';
-    if(hp) note += ' Hors parcours, la minoration de ' + eur(minoration) + ' reste à la charge de l’assuré : le contrat responsable n’a pas le droit de la compenser.';
-    if(pf) note += ' La participation forfaitaire de 2 € est retenue sur le versement de la Sécurité sociale et n’est jamais remboursable.';
+
+    var note = 'Garantie : ' + Math.round(gar*100) + ' % de la base de ' + eur(br) + ' = ' + eur(garTot)
+             + ', dont ' + eur(amoParcours) + ' relevant de la S\u00e9curit\u00e9 sociale \u2014 le contrat compl\u00e8te donc au plus '
+             + eur(Math.max(0, garTot - amoParcours)) + ', dans la limite des frais qui restent \u00e0 couvrir ('
+             + eur(Math.max(0, frais - amoParcours)) + ').';
+    if(nonOptam) note += ' M\u00e9decin non adh\u00e9rent \u00e0 l\u2019OPTAM : le contrat responsable ne peut pas rembourser plus de 100 % de la base au titre des d\u00e9passements, soit ' + eur(br) + '.';
+    var detail = [];
+    if(pf) detail.push(eur(2) + ' de participation forfaitaire');
+    if(minoration > 0) detail.push(eur(minoration) + ' de minoration hors parcours, que le contrat responsable n\u2019a pas le droit de compenser');
+    if(depasNC > 0.004) detail.push(eur(depasNC) + ' de d\u00e9passement non couvert par la garantie');
+    if(detail.length) note += ' Reste \u00e0 charge : ' + detail.join(' + ') + '.';
+    else if(rac < 0.005) note += ' Aucun reste \u00e0 charge sur cet acte.';
     document.getElementById('r-note').textContent = note;
   }
   ids.forEach(function(id){
