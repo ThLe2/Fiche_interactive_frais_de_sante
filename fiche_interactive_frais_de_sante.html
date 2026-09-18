@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le régime des frais de santé — contrat collectif</title>
+<style>
+:root{
+  --prune:#8C1E70; --prune-dark:#5E1349; --prune-light:#F4E6EE; --accent:#C77BAA;
+  --gris:#3C3C3C; --gris-moyen:#8A7A85; --trame:#E8DCE5; --fond:#FAF6F8;
+  --vert:#2F7A4F; --rouge:#B23B3B; --ambre:#B5852A; --blanc:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--gris);
+ font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 60px}
+header.bandeau{background:var(--prune-dark);color:#fff;padding:26px 0 22px}
+header.bandeau .wrap{padding-bottom:0}
+header.bandeau h1{margin:0 0 6px;font-size:1.65rem;line-height:1.25}
+header.bandeau p{margin:0;opacity:.9;font-size:.95rem}
+.barre{position:sticky;top:0;z-index:20;background:#fff;border-bottom:2px solid var(--trame);
+ box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.barre .wrap{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding-top:10px;padding-bottom:10px}
+.barre b{color:var(--prune-dark)}
+.jauge{flex:1 1 180px;height:10px;background:var(--trame);border-radius:6px;overflow:hidden;min-width:140px}
+.jauge span{display:block;height:100%;width:0;background:var(--prune);transition:width .3s}
+.btn{background:var(--prune);color:#fff;border:0;border-radius:7px;padding:10px 18px;
+ font-size:.95rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--prune-dark)}
+.btn:disabled{background:#c9bfc6;cursor:not-allowed}
+.btn.secondaire{background:#fff;color:var(--prune-dark);border:1.5px solid var(--prune)}
+.btn.secondaire:hover{background:var(--prune-light)}
+nav.sommaire{margin:22px 0 6px;display:flex;flex-wrap:wrap;gap:8px}
+nav.sommaire a{display:inline-block;background:#fff;border:1px solid var(--trame);
+ border-radius:20px;padding:6px 14px;font-size:.85rem;color:var(--prune-dark);text-decoration:none}
+nav.sommaire a:hover{background:var(--prune-light);border-color:var(--accent)}
+section{scroll-margin-top:76px;background:#fff;border:1px solid var(--trame);border-radius:10px;padding:20px 22px;margin:18px 0}
+h2{color:var(--prune-dark);font-size:1.22rem;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+h3{color:var(--prune);font-size:1.02rem;margin:20px 0 8px}
+p{margin:0 0 10px}
+ul.liste{margin:0 0 12px;padding-left:20px}
+ul.liste li{margin-bottom:6px}
+ul.liste li::marker{color:var(--prune)}
+table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:.92rem}
+th{background:var(--prune);color:#fff;text-align:left;padding:8px 10px;font-weight:600}
+td{border:1px solid var(--trame);padding:8px 10px;vertical-align:top}
+tr:nth-child(even) td{background:var(--fond)}
+td ul{margin:0;padding-left:18px}
+.encadre{background:var(--prune-light);border-left:6px solid var(--prune);
+ border-radius:0 8px 8px 0;padding:14px 16px;margin:12px 0}
+.encadre .t{font-weight:700;color:var(--prune-dark);margin-bottom:6px}
+.encadre p:last-child,.encadre ul:last-child{margin-bottom:0}
+.tag{display:inline-block;background:var(--prune-light);color:var(--prune-dark);
+ border-radius:4px;padding:2px 8px;font-size:.75rem;font-weight:700;letter-spacing:.03em}
+/* ---- ateliers ---- */
+.atelier{border:1.5px solid var(--accent);border-radius:10px;padding:18px;margin:20px 0;background:#fff}
+.atelier.ok{border-color:var(--vert);background:#fbfdfb}
+.atelier .entete{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.atelier h4{margin:0;color:var(--prune-dark);font-size:1.05rem}
+.atelier .consigne{font-size:.92rem;color:var(--gris-moyen);margin-bottom:14px}
+.item{border-top:1px dashed var(--trame);padding:14px 0 6px}
+.item:first-of-type{border-top:0}
+.item .q{font-weight:600;margin-bottom:8px}
+.opt{display:block;margin:5px 0;padding:7px 10px;border:1px solid var(--trame);border-radius:6px;cursor:pointer;font-size:.94rem}
+.opt:hover{background:var(--fond)}
+.opt input{margin-right:9px}
+.opt.choisi{border-color:var(--prune);background:var(--prune-light)}
+.opt.bonne{border-color:var(--vert);background:#eef7f1}
+.opt.mauvaise{border-color:var(--rouge);background:#fbeeee}
+select,input[type=number],input[type=text]{font-family:inherit;font-size:.95rem;padding:7px 9px;
+ border:1px solid var(--trame);border-radius:6px;background:#fff;color:var(--gris);max-width:100%}
+select{min-width:240px}
+input[type=number]{width:130px}
+.ligne{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0}
+.ligne .lib{flex:1 1 320px}
+.verdict{font-weight:700;font-size:.9rem;margin-left:4px}
+.v-ok{color:var(--vert)} .v-ko{color:var(--rouge)}
+.expl{margin-top:8px;background:var(--fond);border-left:4px solid var(--accent);
+ border-radius:0 6px 6px 0;padding:9px 12px;font-size:.9rem}
+.expl b{color:var(--prune-dark)}
+.pied-atelier{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+.alerte{display:none;color:var(--rouge);font-size:.9rem;font-weight:600}
+.score-at{font-weight:700;color:var(--prune-dark)}
+/* ---- outil ---- */
+.outil{background:var(--fond);border:1px solid var(--trame);border-radius:10px;padding:16px;margin:14px 0}
+.outil .champs{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:12px}
+.outil label{font-size:.85rem;font-weight:600;color:var(--prune-dark);display:block;margin-bottom:3px}
+.res{display:flex;flex-wrap:wrap;gap:10px}
+.res div{flex:1 1 150px;background:#fff;border:1px solid var(--trame);border-radius:8px;padding:10px}
+.res .k{font-size:.78rem;color:var(--gris-moyen);text-transform:uppercase;letter-spacing:.04em}
+.res .v{font-size:1.3rem;font-weight:700;color:var(--prune-dark)}
+/* ---- bilan ---- */
+#bilan{display:none}
+#bilan.on{display:block}
+.cercle{width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;color:#fff;margin:0 auto 14px}
+.cercle .pct{font-size:1.7rem;font-weight:700;line-height:1}
+.cercle .sur{font-size:.8rem;opacity:.9}
+.palier{text-align:center;font-weight:700;font-size:1.05rem;margin-bottom:12px}
+footer{text-align:center;color:var(--gris-moyen);font-size:.8rem;padding:24px 18px 30px}
+@media(max-width:620px){
+  header.bandeau h1{font-size:1.3rem}
+  select{min-width:100%}
+  table{font-size:.85rem}
+}
+</style>
+</head>
+<body>
+<header class="bandeau"><div class="wrap">
+<h1>Le régime des frais de santé — contrat collectif</h1>
+<p>Fiche mémo interactive · simulateur de remboursement · 8 ateliers · TMK Performances — mise à jour septembre 2026</p>
+</div></header>
+
+<div class="barre"><div class="wrap">
+<span>Ateliers validés&nbsp;: <b id="nb-faits">0 / 0</b></span>
+<span>Score&nbsp;: <b id="score-global">0 / 0</b></span>
+<span class="jauge"><span></span></span>
+<button class="btn secondaire" id="btn-reset">Tout recommencer</button>
+</div></div>
+
+<div class="wrap">
+<nav class="sommaire"><a href="#s0">Mode d’emploi</a><a href="#s1">1. Les trois étages</a><a href="#s2">2. Simulateur</a><a href="#s3">3. Mise en place</a><a href="#s4">4. Garanties</a><a href="#s5">5. Financement</a><a href="#s6">6. Dispenses</a><a href="#s7">7. Après le départ</a><a href="#s8">8. Pièges</a></nav>
+<section id="s0"><h2>Comment utiliser cette fiche</h2><p>Chaque section se lit, puis se vérifie par un atelier. Répondez à tous les points, validez : la correction s’affiche et <strong>vos réponses sont alors figées</strong>. Le bilan apparaît une fois les huit ateliers validés ; le bouton « Tout recommencer » remet la fiche à zéro.</p><div class="encadre"><div class="t">Repères</div><ul class="liste"><li>Les montants cités sont ceux en vigueur à la date de mise à jour : ce sont les <em>règles</em> qu’il faut retenir, les valeurs étant revalorisées régulièrement.</li><li>PASS 2026 : 48 060 € par an, soit 4 005 € par mois (PMSS).</li><li>Forfait journalier hospitalier : 23 € par jour depuis le 1ᵉʳ mars 2026 (17 € en service psychiatrique).</li></ul></div></section><section id="s1"><h2>1. Qui paie quoi, et avec quels mots</h2><table><tr><th>Étage</th><th>Qui</th><th>Ce qu’il prend en charge</th></tr><tr><td>Assurance maladie obligatoire</td><td>La Sécurité sociale</td><td>Une fraction de la base de remboursement, selon un taux propre à chaque nature de soin.</td></tr><tr><td>Assurance maladie complémentaire</td><td>Mutuelle, institution de prévoyance ou société d’assurance</td><td>Tout ou partie de ce que la Sécurité sociale ne verse pas, dans la limite de la garantie souscrite.</td></tr><tr><td>Reste à charge</td><td>L’assuré</td><td>Participation forfaitaire, franchises, dépassements non couverts, soins non remboursables.</td></tr></table><h3>Le vocabulaire indispensable</h3><table><tr><th>Terme</th><th>Signification</th></tr><tr><td>Base de remboursement (BR)</td><td>Le tarif de référence de la Sécurité sociale — pas le prix payé. Tarif de convention chez un conventionné, tarif d’autorité chez un non conventionné.</td></tr><tr><td>Ticket modérateur</td><td>La part de la base qui reste après le remboursement de la Sécurité sociale.</td></tr><tr><td>Dépassement d’honoraires</td><td>La part du prix qui excède la base. Jamais remboursée par la Sécurité sociale.</td></tr><tr><td>Participation forfaitaire</td><td>2 € par consultation ou acte, dans la limite de 4 par jour et de 50 € par an.</td></tr><tr><td>Franchises médicales</td><td>1 € par boîte de médicament et par acte paramédical, 4 € par transport ; plafonds journaliers et plafond annuel de 50 €.</td></tr><tr><td>Parcours de soins</td><td>Le passage par le médecin traitant. Hors parcours, le remboursement est minoré de 40 points de la base, dans la limite de 10,60 €.</td></tr><tr><td>OPTAM</td><td>Dispositif de maîtrise des honoraires : l’adhésion du praticien améliore la base et la prise en charge des dépassements.</td></tr></table><div data-atelier="b1"></div></section><section id="s2"><h2>2. Simulateur : décomposer un remboursement</h2><p>Faites varier les paramètres : le simulateur applique la règle et affiche ce que chacun verse. Il n’est pas noté — c’est un outil d’exploration, à utiliser avant l’atelier suivant.</p>
+<div class="outil">
+  <div class="champs">
+    <div><label for="o-frais">Honoraires payés (€)</label><input type="number" id="o-frais" value="55" step="0.5"></div>
+    <div><label for="o-br">Base de remboursement (€)</label><input type="number" id="o-br" value="31.50" step="0.5"></div>
+    <div><label for="o-taux">Taux Sécurité sociale (%)</label><input type="number" id="o-taux" value="70" step="5"></div>
+    <div><label for="o-gar">Garantie du contrat (% BR)</label><input type="number" id="o-gar" value="150" step="10"></div>
+    <div><label for="o-pf">Participation forfaitaire</label><input type="checkbox" id="o-pf" checked> 2 €</div>
+    <div><label for="o-hp">Hors parcours de soins</label><input type="checkbox" id="o-hp"> minoration</div>
+  </div>
+  <div class="res">
+    <div><div class="k">Versé par la Sécurité sociale</div><div class="v" id="r-amo">—</div></div>
+    <div><div class="k">Versé par le contrat</div><div class="v" id="r-amc">—</div></div>
+    <div><div class="k">Reste à charge</div><div class="v" id="r-rac">—</div></div>
+  </div>
+  <p style="margin-top:10px;font-size:.88rem;color:#8A7A85" id="r-note"></p>
+</div>
+<div class="encadre"><div class="t">Trois règles que le simulateur met en évidence</div><ul class="liste"><li>Le remboursement total ne peut jamais dépasser les frais réellement engagés.</li><li>La garantie exprimée en pourcentage <em>inclut</em> la part de la Sécurité sociale : « 100 % BR » couvre le ticket modérateur, rien de plus.</li><li>Hors parcours de soins, la minoration reste à la charge de l’assuré : un contrat responsable n’a pas le droit de la compenser.</li></ul></div><div data-atelier="b2"></div></section><section id="s3"><h2>3. L’obligation de l’employeur et la mise en place</h2><ul class="liste"><li>Origine : accord national interprofessionnel du 11 janvier 2013, transposé par la loi du 14 juin 2013.</li><li>Obligation depuis le 1ᵉʳ janvier 2016 (art. L. 911-7 CSS), quel que soit l’effectif ; seul le particulier employeur est hors champ.</li><li>Périmètre minimal : le salarié lui-même ; l’extension aux ayants droit dépend de l’accord ou de l’acte fondateur.</li><li>Trois mots-clés : le régime doit être <strong>collectif</strong>, <strong>obligatoire</strong> et <strong>responsable</strong> — c’est à ces conditions que jouent les avantages sociaux et fiscaux.</li></ul><table><tr><th>Acte fondateur</th><th>Comment</th><th>Conséquence</th></tr><tr><td>Accord collectif</td><td>Branche ou entreprise, négocié avec les représentants du personnel.</td><td>Aucun salarié ne peut refuser hors dispenses prévues.</td></tr><tr><td>Référendum</td><td>Projet de l’employeur ratifié à la majorité des salariés concernés.</td><td>Même effet.</td></tr><tr><td>Décision unilatérale (DUE)</td><td>Écrit remis à chaque salarié, remise prouvable.</td><td>Les salariés déjà présents peuvent refuser si le régime est contributif (loi Évin).</td></tr></table><div class="encadre"><div class="t">Les catégories objectives</div><p>Le régime couvre tout le personnel ou une catégorie définie à partir de critères objectifs limitativement énumérés (cadres et non-cadres, tranches de rémunération, classifications conventionnelles…). Une condition d’ancienneté est admise dans la limite de douze mois. La période transitoire s’est achevée le <strong>31 décembre 2024</strong>.</p></div><div data-atelier="b3"></div></section><section id="s4"><h2>4. Panier minimum et contrat responsable</h2><h3>Le panier minimum (art. D. 911-1 CSS)</h3><table><tr><th>Poste</th><th>Garantie minimale</th></tr><tr><td>Soins courants</td><td>Ticket modérateur intégral sur les actes remboursés, hors cures thermales, homéopathie et médicaments à service médical rendu faible ou modéré.</td></tr><tr><td>Hospitalisation</td><td>Forfait journalier hospitalier intégral, sans limitation de durée.</td></tr><tr><td>Dentaire</td><td>Prothèses et orthodontie à 125 % du tarif de convention.</td></tr><tr><td>Optique</td><td>Forfait par équipement et par période de deux ans : 100 € (verres simples), 150 € (équipement mixte), 200 € (verres complexes) — un an pour les mineurs ou en cas d’évolution de la vue.</td></tr></table><h3>Le cahier des charges du contrat responsable</h3><table><tr><th>Il doit</th><th>Il ne doit jamais</th><th>Il plafonne</th></tr><tr><td><ul><li>Prendre en charge l’intégralité du ticket modérateur.</li><li>Couvrir le forfait journalier hospitalier sans limite de durée.</li><li>Financer intégralement les paniers 100 % santé.</li></ul></td><td><ul><li>Rembourser la participation forfaitaire.</li><li>Rembourser les franchises médicales.</li><li>Compenser la majoration hors parcours.</li><li>Prendre en charge les dépassements sur actes réalisés hors parcours.</li></ul></td><td><ul><li>Les dépassements des médecins non adhérents à l’OPTAM : au maximum 100 % de la base, avec un remboursement inférieur d’au moins 20 % à celui des adhérents.</li></ul></td></tr></table><div class="encadre"><div class="t">À jour 2026</div><p>Le décret n° 2025-1131 du 26 novembre 2025 a élargi le cahier des charges — fauteuils roulants (différence entre la base et le prix limite de vente) et prothèses capillaires. Le Bulletin officiel de la sécurité sociale accorde une tolérance : mise en conformité des actes et des contrats au plus tard le <strong>31 décembre 2026</strong>.</p></div><div data-atelier="b4"></div></section><section id="s5"><h2>5. Financement et traitement en paie</h2><table><tr><th>Règle</th><th>Contenu</th></tr><tr><td>Financement</td><td>L’employeur finance au moins 50 % de la cotisation du socle obligatoire ; les garanties facultatives restent à la charge du salarié.</td></tr><tr><td>Exonération de cotisations</td><td>Contribution patronale exonérée dans la limite de 6 % du PASS + 1,5 % de la rémunération brute annuelle, sans dépasser 12 % du PASS.</td></tr><tr><td>Ce qui reste dû</td><td>CSG-CRDS, et forfait social de 8 % dans les entreprises d’au moins 11 salariés.</td></tr><tr><td>Impôt sur le revenu</td><td>La part patronale est ajoutée au revenu imposable ; la part salariale reste déductible dans les limites de l’article 83 du CGI.</td></tr><tr><td>Enjeu</td><td>Perte du caractère collectif, obligatoire ou responsable : réintégration des contributions patronales dans l’assiette des cotisations, sur trois ans.</td></tr></table><div data-atelier="b5"></div></section><section id="s6"><h2>6. Les dispenses d’adhésion</h2><p>L’adhésion est obligatoire : la dispense est l’exception. Elle est toujours demandée par le salarié, <strong>par écrit</strong>, et l’employeur conserve le justificatif.</p><h3>Dispenses de droit — opposables même si l’acte fondateur ne les prévoit pas</h3><ul class="liste"><li>CDD ou contrat de mission de moins de trois mois, avec couverture responsable par ailleurs.</li><li>Temps très partiel ou apprenti dont la cotisation atteindrait au moins 10 % de la rémunération brute.</li><li>Bénéficiaire de la complémentaire santé solidaire, jusqu’à la fin du droit.</li><li>Salarié déjà couvert par un contrat individuel, jusqu’à son échéance.</li><li>Salarié couvert par un autre régime collectif et obligatoire : conjoint, autre employeur, régime local d’Alsace-Moselle, régime de la fonction publique, contrat « Madelin ».</li><li>Salarié présent lors d’une mise en place par décision unilatérale, lorsque le régime est contributif.</li></ul><div class="encadre"><div class="t">Le versement santé (« chèque santé »)</div><p>Pour les CDD ou contrats de mission de trois mois au plus et les temps partiels de 15 heures par semaine au plus, l’employeur peut remplacer l’adhésion par une aide versée au salarié, qui souscrit lui-même un contrat responsable. Montant de référence 2026 lorsque la contribution n’est pas déterminable : <strong>22,27 €</strong> par mois (7,44 € en Alsace-Moselle), affecté d’un coefficient majoré pour les contrats courts.</p></div><div data-atelier="b6"></div></section><section id="s7"><h2>7. Suspension, départ, retraite</h2><table><tr><th>Situation</th><th>Ce qui s’applique</th></tr><tr><td>Suspension avec maintien de rémunération (arrêt indemnisé, maternité)</td><td>Couverture maintenue, cotisations dues, réparties comme pendant l’activité.</td></tr><tr><td>Suspension sans rémunération (congé sabbatique, congé parental)</td><td>Maintien non automatique : il doit être prévu par l’acte fondateur.</td></tr><tr><td>Portabilité (art. L. 911-8 CSS)</td><td>Maintien gratuit, financé par mutualisation, pour une durée égale à celle du dernier contrat de travail, plafonnée à douze mois. Trois conditions : droits ouverts chez l’ancien employeur, rupture non consécutive à une faute lourde, prise en charge par l’assurance chômage.</td></tr><tr><td>Loi Évin (art. 4, loi du 31 décembre 1989)</td><td>Retraités, invalides, chômeurs indemnisés : maintien à titre individuel sans limitation de durée, à demander dans les six mois. Tarif encadré : 100 % du tarif des actifs la 1ʳᵉ année, 125 % la 2ᵉ, 150 % la 3ᵉ, libre ensuite.</td></tr><tr><td>Décès du salarié</td><td>Les ayants droit couverts peuvent demander le maintien de la garantie pendant douze mois.</td></tr></table><div data-atelier="b7"></div></section><section id="s8"><h2>8. Les pièges à éviter</h2><ul class="liste"><li>« 100 % » ne veut pas dire « intégralement remboursé » : c’est 100 % de la base, pas du prix payé.</li><li>Chez un professionnel non conventionné, la base est le tarif d’autorité : une garantie élevée appliquée à une base minuscule reste minuscule.</li><li>Même très bien couvert, l’assuré conserve la participation forfaitaire et les franchises.</li><li>Le reste à charge zéro du 100 % santé dépend du panier choisi, pas du niveau de garantie.</li><li>L’employeur ne peut pas réserver la mutuelle à un salarié : le caractère collectif disparaît et les exonérations tombent.</li><li>La résiliation infra-annuelle est un droit du souscripteur — en collectif obligatoire, c’est l’employeur.</li><li>Une dispense sans justificatif conservé est, pour l’URSSAF, une adhésion manquante.</li></ul><div data-atelier="b8"></div></section>
+<section id="bilan"><h2>Bilan de la fiche</h2><div class="contenu"></div></section>
+</div>
+
+<footer>TMK Performances - N° Siret : 49841924100027 - Code NAF : 8559A</footer>
+
+<script>
+const ATELIERS = {
+ "b1": {
+  "titre": "Atelier 1 — Le vocabulaire",
+  "consigne": "À quel terme correspond chaque définition ?",
+  "items": [
+   {
+    "type": "select",
+    "q": "Le tarif de référence retenu par la Sécurité sociale pour calculer son remboursement.",
+    "options": [
+     "Base de remboursement",
+     "Ticket modérateur",
+     "Dépassement d’honoraires",
+     "Reste à charge"
+    ],
+    "correct": 0,
+    "expl": "Ce n’est pas le prix payé. On l’appelle tarif de convention chez un professionnel conventionné, tarif d’autorité chez un non conventionné."
+   },
+   {
+    "type": "select",
+    "q": "La part de la base qui subsiste après le remboursement de la Sécurité sociale.",
+    "options": [
+     "Franchise médicale",
+     "Ticket modérateur",
+     "Forfait journalier",
+     "Participation forfaitaire"
+    ],
+    "correct": 1,
+    "expl": "C’est le premier poste couvert par la complémentaire : un contrat responsable doit le prendre en charge intégralement."
+   },
+   {
+    "type": "select",
+    "q": "La part du prix payé qui excède la base de remboursement.",
+    "options": [
+     "Ticket modérateur",
+     "Reste à charge",
+     "Dépassement d’honoraires",
+     "Forfait journalier"
+    ],
+    "correct": 2,
+    "expl": "Jamais remboursée par la Sécurité sociale. Seule la garantie du contrat peut l’absorber, dans ses limites."
+   },
+   {
+    "type": "select",
+    "q": "2 € retenus sur chaque consultation ou acte médical, dans la limite de 4 par jour et de 50 € par an.",
+    "options": [
+     "Franchise médicale",
+     "Participation forfaitaire",
+     "Forfait patient urgences",
+     "Ticket modérateur"
+    ],
+    "correct": 1,
+    "expl": "Elle reste à la charge de l’assuré : un contrat responsable n’a pas le droit de la rembourser."
+   },
+   {
+    "type": "select",
+    "q": "1 € par boîte de médicament et par acte paramédical, 4 € par transport sanitaire.",
+    "options": [
+     "Participation forfaitaire",
+     "Franchise médicale",
+     "Forfait journalier",
+     "Reste à charge"
+    ],
+    "correct": 1,
+    "expl": "Avec des plafonds journaliers (4 € en paramédical, 8 € en transport) et un plafond annuel de 50 €."
+   },
+   {
+    "type": "select",
+    "q": "23 € par jour d’hospitalisation (17 € en service psychiatrique) depuis le 1ᵉʳ mars 2026.",
+    "options": [
+     "Forfait journalier hospitalier",
+     "Forfait patient urgences",
+     "Participation forfaitaire",
+     "Franchise"
+    ],
+    "correct": 0,
+    "expl": "Un contrat responsable doit le couvrir intégralement, sans limitation de durée."
+   },
+   {
+    "type": "select",
+    "q": "Le passage par le médecin traitant avant le spécialiste.",
+    "options": [
+     "Tiers payant",
+     "Parcours de soins coordonnés",
+     "Panier 100 % santé",
+     "OPTAM"
+    ],
+    "correct": 1,
+    "expl": "Hors parcours, le remboursement est minoré — et la complémentaire responsable n’a pas le droit de compenser cette minoration."
+   },
+   {
+    "type": "select",
+    "q": "Le dispositif par lequel l’assuré n’avance pas la part prise en charge.",
+    "options": [
+     "Tiers payant",
+     "Subrogation",
+     "Délégation de paiement",
+     "Forfait"
+    ],
+    "correct": 0,
+    "expl": "À ne pas confondre avec le 100 % santé, qui porte sur le reste à charge et non sur l’avance de frais."
+   }
+  ]
+ },
+ "b2": {
+  "titre": "Atelier 2 — Trois calculs de remboursement",
+  "consigne": "Utilisez le simulateur ci-dessus pour vérifier votre raisonnement, puis répondez. Montants en euros, deux décimales.",
+  "items": [
+   {
+    "type": "num",
+    "q": "Généraliste secteur 1, dans le parcours de soins. Honoraires 30 €, base 30 €, taux 70 %, garantie 100 % BR. Montant <b>versé par la Sécurité sociale</b> ?",
+    "correct": 19.0,
+    "tol": 0.01,
+    "unite": "€",
+    "expl": "70 % de 30 € = 21,00 €, moins 2 € de participation forfaitaire retenue : 19,00 € versés."
+   },
+   {
+    "type": "num",
+    "q": "Même situation : <b>reste à charge</b> du patient ?",
+    "correct": 2.0,
+    "tol": 0.01,
+    "unite": "€",
+    "expl": "La complémentaire verse 9,00 € (ticket modérateur). Il ne reste que la participation forfaitaire de 2 €, qu’un contrat responsable ne peut pas rembourser."
+   },
+   {
+    "type": "num",
+    "q": "Rhumatologue adhérent OPTAM, dans le parcours. Honoraires 55 €, base 31,50 €, garantie 150 % BR. Montant versé par la <b>complémentaire</b> ?",
+    "correct": 25.2,
+    "tol": 0.02,
+    "unite": "€",
+    "expl": "Garantie totale : 150 % × 31,50 = 47,25 €, dont 22,05 € déjà versés par la Sécurité sociale → 25,20 € à la charge du contrat."
+   },
+   {
+    "type": "num",
+    "q": "Même situation : <b>reste à charge</b> du patient ?",
+    "correct": 9.75,
+    "tol": 0.02,
+    "unite": "€",
+    "expl": "55,00 − 20,05 (versé par la SS après participation forfaitaire) − 25,20 = 9,75 €. La garantie ne suffit pas à couvrir tout le dépassement."
+   },
+   {
+    "type": "num",
+    "q": "Gynécologue <b>non adhérente</b> à l’OPTAM, dans le parcours. Honoraires 66 €, base 23 €, garantie 200 % BR. Reste à charge ?",
+    "correct": 22.0,
+    "tol": 0.05,
+    "unite": "€",
+    "expl": "SS : 16,10 € dont 14,10 € versés. Contrat : 29,90 €. Reste 22,00 €. Le plafonnement des dépassements des non-adhérents (100 % de la base) est ici exactement atteint."
+   },
+   {
+    "type": "num",
+    "q": "Même consultation, mais <b>hors parcours de soins</b> : de combien la Sécurité sociale minore-t-elle son remboursement ?",
+    "correct": 9.2,
+    "tol": 0.05,
+    "unite": "€",
+    "expl": "La minoration vaut 40 points de la base, plafonnée à 10,60 € : ici 40 % × 23 € = 9,20 €, le plafond ne joue pas. Et le contrat responsable n’a pas le droit de compenser cette somme."
+   }
+  ]
+ },
+ "b3": {
+  "titre": "Atelier 3 — Mise en place du régime",
+  "consigne": "Cinq situations d’entreprise.",
+  "items": [
+   {
+    "type": "select",
+    "q": "Seul acte de mise en place qui permet aux salariés <b>déjà présents</b> de refuser d’adhérer, lorsque le régime est contributif :",
+    "options": [
+     "Accord collectif (branche ou entreprise)",
+     "Ratification par référendum",
+     "Décision unilatérale de l’employeur (DUE)"
+    ],
+    "correct": 2,
+    "expl": "Décision unilatérale de l’employeur, en application de l’article 11 de la loi Évin du 31 décembre 1989. Les salariés embauchés après la mise en place, eux, ne peuvent pas refuser."
+   },
+   {
+    "type": "radio",
+    "q": "Depuis quand l’employeur privé doit-il couvrir ses salariés en frais de santé ?",
+    "options": [
+     "Depuis le 1ᵉʳ janvier 2013",
+     "Depuis le 1ᵉʳ janvier 2016",
+     "Depuis le 1ᵉʳ janvier 2020"
+    ],
+    "correct": 1,
+    "expl": "ANI du 11 janvier 2013, transposé par la loi du 14 juin 2013 : l’obligation s’applique depuis le 1ᵉʳ janvier 2016 (art. L. 911-7 CSS)."
+   },
+   {
+    "type": "radio",
+    "q": "Une entreprise de trois salariés est-elle concernée ?",
+    "options": [
+     "Non, en dessous de 11 salariés l’obligation ne s’applique pas",
+     "Oui : l’obligation ne dépend pas de l’effectif",
+     "Oui, mais seulement si un accord de branche le prévoit"
+    ],
+    "correct": 1,
+    "expl": "Aucun seuil d’effectif. Seul le particulier employeur est hors champ."
+   },
+   {
+    "type": "radio",
+    "q": "L’employeur souhaite réserver la couverture à ses trois commerciaux. Que se passe-t-il ?",
+    "options": [
+     "C’est possible si les autres salariés sont d’accord",
+     "Le caractère collectif disparaît : les contributions patronales sont réintégrées dans l’assiette des cotisations",
+     "C’est possible, la mutuelle est un avantage libre"
+    ],
+    "correct": 1,
+    "expl": "La catégorie doit être définie à partir des critères objectifs limitativement énumérés. La période transitoire s’est achevée le 31 décembre 2024 : un redressement URSSAF est encouru sur les trois dernières années."
+   },
+   {
+    "type": "radio",
+    "q": "Le régime couvre obligatoirement :",
+    "options": [
+     "Le salarié seul, sauf si l’acte fondateur étend la couverture à sa famille",
+     "Le salarié, son conjoint et ses enfants dans tous les cas",
+     "Le salarié et ses enfants uniquement"
+    ],
+    "correct": 0,
+    "expl": "L’extension aux ayants droit n’est obligatoire que si l’accord de branche ou l’acte de mise en place le prévoit ; sinon elle est facultative et financée par le salarié."
+   }
+  ]
+ },
+ "b4": {
+  "titre": "Atelier 4 — Le contrat responsable",
+  "consigne": "Chaque poste doit-il être pris en charge par un contrat responsable, ou lui est-il au contraire interdit de le rembourser ?",
+  "items": [
+   {
+    "type": "select",
+    "q": "Le ticket modérateur d’une consultation.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 0,
+    "expl": "Prise en charge intégrale, hors exceptions légales (cures thermales, homéopathie, médicaments à service médical rendu faible ou modéré)."
+   },
+   {
+    "type": "select",
+    "q": "Le forfait journalier hospitalier.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 0,
+    "expl": "Intégralement, et sans limitation de durée."
+   },
+   {
+    "type": "select",
+    "q": "La participation forfaitaire de 2 €.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 1,
+    "expl": "Elle doit rester à la charge de l’assuré : c’est le principe même de la « responsabilisation »."
+   },
+   {
+    "type": "select",
+    "q": "Les franchises médicales.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 1,
+    "expl": "Interdiction identique, pour les médicaments, les actes paramédicaux et les transports."
+   },
+   {
+    "type": "select",
+    "q": "Le panier 100 % santé en optique, dentaire et audiologie.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 0,
+    "expl": "Financé intégralement, ce qui produit un reste à charge nul — indépendamment du niveau de garantie souscrit."
+   },
+   {
+    "type": "select",
+    "q": "La majoration appliquée hors parcours de soins.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 1,
+    "expl": "Le contrat n’a pas le droit de compenser la pénalité, sans quoi elle perdrait tout effet."
+   },
+   {
+    "type": "select",
+    "q": "Les dépassements d’un médecin adhérent à l’OPTAM, dans la limite de la garantie.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 0,
+    "expl": "Ils sont couverts selon le niveau souscrit. Ce sont les dépassements des <em>non-adhérents</em> qui sont plafonnés (100 % de la base au maximum, avec un remboursement inférieur d’au moins 20 % à celui des adhérents)."
+   },
+   {
+    "type": "select",
+    "q": "La prise en charge des fauteuils roulants et des prothèses capillaires.",
+    "options": [
+     "Le contrat responsable DOIT le prendre en charge",
+     "Le contrat responsable NE DOIT JAMAIS le rembourser"
+    ],
+    "correct": 0,
+    "expl": "Ajoutée au cahier des charges par le décret n° 2025-1131 du 26 novembre 2025 ; les contrats et les actes fondateurs doivent être mis en conformité au plus tard le 31 décembre 2026."
+   }
+  ]
+ },
+ "b5": {
+  "titre": "Atelier 5 — Financement et traitement en paie",
+  "consigne": "Ce que le bulletin de salaire doit refléter.",
+  "items": [
+   {
+    "type": "num",
+    "q": "La cotisation du socle obligatoire s’élève à 92 € par mois. Part <b>minimale</b> à la charge de l’employeur ?",
+    "correct": 46.0,
+    "tol": 0.01,
+    "unite": "€",
+    "expl": "Au moins 50 % de la cotisation du socle obligatoire. Les garanties facultatives (conjoint, enfants, surcomplémentaire) restent à la charge du salarié."
+   },
+   {
+    "type": "radio",
+    "q": "La contribution patronale est exonérée de cotisations de sécurité sociale dans la limite de :",
+    "options": [
+     "6 % du PASS + 1,5 % de la rémunération brute annuelle, sans dépasser 12 % du PASS",
+     "5 % du PASS + 2 % de la rémunération, sans dépasser 10 % du PASS",
+     "Un montant forfaitaire fixé chaque année par l’URSSAF"
+    ],
+    "correct": 0,
+    "expl": "PASS 2026 : 48 060 € par an, soit 4 005 € par mois."
+   },
+   {
+    "type": "check",
+    "q": "Malgré cette exonération, la part patronale reste soumise à : (plusieurs réponses)",
+    "options": [
+     "la CSG-CRDS",
+     "la taxe sur les salaires dans tous les cas",
+     "au forfait social de 8 % dans les entreprises d’au moins 11 salariés",
+     "aux cotisations d’assurance vieillesse"
+    ],
+    "correct": [
+     0,
+     2
+    ],
+    "expl": "L’exonération porte sur les cotisations de sécurité sociale, pas sur la CSG-CRDS ni sur le forfait social."
+   },
+   {
+    "type": "radio",
+    "q": "Du point de vue de l’impôt sur le revenu du salarié :",
+    "options": [
+     "La part patronale est ajoutée à son revenu imposable",
+     "La part patronale est exonérée d’impôt",
+     "Les deux parts sont exonérées"
+    ],
+    "correct": 0,
+    "expl": "La part salariale, elle, reste déductible du revenu imposable dans les limites de l’article 83 du code général des impôts."
+   },
+   {
+    "type": "radio",
+    "q": "Que risque l’entreprise si le régime perd son caractère collectif, obligatoire ou responsable ?",
+    "options": [
+     "Rien, le contrat reste valable",
+     "La réintégration des contributions patronales dans l’assiette des cotisations, sur les trois dernières années",
+     "Une amende forfaitaire de 1 500 €"
+    ],
+    "correct": 1,
+    "expl": "C’est l’enjeu financier majeur des contrôles URSSAF sur ces régimes."
+   }
+  ]
+ },
+ "b6": {
+  "titre": "Atelier 6 — Dispenses d’adhésion",
+  "consigne": "Le salarié peut-il refuser d’adhérer ?",
+  "items": [
+   {
+    "type": "select",
+    "q": "Salariée déjà couverte, en qualité d’ayant droit, par le contrat collectif obligatoire de son mari.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 0,
+    "expl": "Dispense de droit, sur justificatif à renouveler. Attention : la couverture du conjoint doit être elle-même collective et obligatoire."
+   },
+   {
+    "type": "select",
+    "q": "Salarié embauché en CDD de deux mois, couvert par ailleurs par un contrat responsable.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 0,
+    "expl": "Dispense de droit pour les contrats de moins de trois mois ; l’employeur verse alors le « versement santé »."
+   },
+   {
+    "type": "select",
+    "q": "Salarié à temps très partiel dont la cotisation représenterait 12 % de sa rémunération brute.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 0,
+    "expl": "Dispense de droit dès lors que la cotisation atteindrait au moins 10 % de la rémunération."
+   },
+   {
+    "type": "select",
+    "q": "Salarié bénéficiaire de la complémentaire santé solidaire.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 0,
+    "expl": "Dispense de droit, jusqu’à la fin de son droit à la complémentaire santé solidaire."
+   },
+   {
+    "type": "select",
+    "q": "Salarié embauché en CDI il y a deux ans, qui trouve la cotisation trop chère.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 1,
+    "expl": "Aucune dispense : le régime est obligatoire, et le coût n’est pas un motif prévu par les textes."
+   },
+   {
+    "type": "select",
+    "q": "Salarié présent lors de la mise en place du régime par décision unilatérale, régime contributif.",
+    "options": [
+     "Dispense de droit possible",
+     "Adhésion obligatoire"
+    ],
+    "correct": 0,
+    "expl": "Il peut refuser, en application de la loi Évin. Un salarié embauché après la mise en place, non."
+   },
+   {
+    "type": "radio",
+    "q": "Le versement santé (« chèque santé ») concerne :",
+    "options": [
+     "Tous les salariés qui refusent d’adhérer",
+     "Les CDD ou contrats de mission de trois mois au plus et les temps partiels de 15 heures par semaine au plus",
+     "Les seuls apprentis"
+    ],
+    "correct": 1,
+    "expl": "Son montant correspond à la contribution que l’employeur aurait versée ; à défaut, le montant de référence 2026 est de 22,27 € par mois (7,44 € en Alsace-Moselle), affecté d’un coefficient majoré pour les contrats courts."
+   }
+  ]
+ },
+ "b7": {
+  "titre": "Atelier 7 — Après le départ de l’entreprise",
+  "consigne": "Quel dispositif s’applique ?",
+  "items": [
+   {
+    "type": "select",
+    "q": "Salarié licencié pour motif économique, indemnisé par l’assurance chômage, après quatre ans d’ancienneté.",
+    "options": [
+     "Portabilité (art. L. 911-8 CSS)",
+     "Maintien loi Évin à titre individuel",
+     "Aucun maintien du contrat d’entreprise"
+    ],
+    "correct": 0,
+    "expl": "Portabilité gratuite, pour une durée égale à celle du dernier contrat de travail, plafonnée à douze mois."
+   },
+   {
+    "type": "select",
+    "q": "Salarié licencié pour faute lourde.",
+    "options": [
+     "Portabilité (art. L. 911-8 CSS)",
+     "Maintien loi Évin à titre individuel",
+     "Aucun maintien du contrat d’entreprise"
+    ],
+    "correct": 2,
+    "expl": "La faute lourde est le seul motif de rupture qui exclut la portabilité."
+   },
+   {
+    "type": "select",
+    "q": "Salarié démissionnaire, sans prise en charge par l’assurance chômage.",
+    "options": [
+     "Portabilité (art. L. 911-8 CSS)",
+     "Maintien loi Évin à titre individuel",
+     "Aucun maintien du contrat d’entreprise"
+    ],
+    "correct": 2,
+    "expl": "L’indemnisation chômage conditionne la portabilité : la plupart des démissions en sont donc exclues, sauf démission légitime."
+   },
+   {
+    "type": "select",
+    "q": "Ancien salarié parti à la retraite, qui souhaite garder le même niveau de garanties.",
+    "options": [
+     "Portabilité (art. L. 911-8 CSS)",
+     "Maintien loi Évin à titre individuel",
+     "Aucun maintien du contrat d’entreprise"
+    ],
+    "correct": 1,
+    "expl": "Loi Évin, article 4 : maintien à titre individuel et sans limitation de durée, à demander dans les six mois."
+   },
+   {
+    "type": "select",
+    "q": "Ancien salarié arrivé au terme de ses douze mois de portabilité, toujours au chômage indemnisé.",
+    "options": [
+     "Portabilité (art. L. 911-8 CSS)",
+     "Maintien loi Évin à titre individuel",
+     "Aucun maintien du contrat d’entreprise"
+    ],
+    "correct": 1,
+    "expl": "Il bascule sur le maintien loi Évin, dans les six mois suivant la fin de la portabilité."
+   },
+   {
+    "type": "radio",
+    "q": "Tarif encadré du maintien loi Évin :",
+    "options": [
+     "100 % du tarif des actifs la 1ʳᵉ année, 125 % la 2ᵉ, 150 % la 3ᵉ, libre ensuite",
+     "150 % dès la première année",
+     "Le tarif des actifs, sans limitation de durée"
+    ],
+    "correct": 0,
+    "expl": "Un plafonnement progressif, destiné à lisser le passage vers un tarif individuel."
+   }
+  ]
+ },
+ "b8": {
+  "titre": "Atelier 8 — Les pièges classiques",
+  "consigne": "Ce que les salariés comprennent de travers — et que vous devez savoir expliquer.",
+  "items": [
+   {
+    "type": "radio",
+    "q": "« Je suis remboursé à 100 %, je ne devrais rien payer. »",
+    "options": [
+     "C’est exact",
+     "100 % porte sur la base de remboursement, pas sur le prix payé : dépassements, participation forfaitaire et franchises restent dus",
+     "C’est exact, sauf en optique"
+    ],
+    "correct": 1,
+    "expl": "La confusion la plus fréquente. « 100 % BR » signifie simplement que le ticket modérateur est couvert."
+   },
+   {
+    "type": "radio",
+    "q": "Consultation chez un médecin <b>non conventionné</b>, avec une garantie à 300 % :",
+    "options": [
+     "Le remboursement est excellent",
+     "La base est le tarif d’autorité (quelques centimes) : une garantie élevée appliquée à une base minuscule reste minuscule",
+     "Le contrat rembourse 300 % du prix payé"
+    ],
+    "correct": 1,
+    "expl": "Environ 0,61 € pour un généraliste et 1,22 € pour un spécialiste : la garantie n’y change rien."
+   },
+   {
+    "type": "radio",
+    "q": "Un salarié veut résilier la mutuelle d’entreprise en cours d’année, par résiliation infra-annuelle.",
+    "options": [
+     "C’est son droit depuis 2020",
+     "Non : en collectif obligatoire, le souscripteur est l’employeur, pas le salarié",
+     "Oui, s’il a plus d’un an d’ancienneté dans le contrat"
+    ],
+    "correct": 1,
+    "expl": "La résiliation infra-annuelle est un droit du souscripteur du contrat, donc de l’entreprise."
+   },
+   {
+    "type": "radio",
+    "q": "Un salarié très bien couvert choisit une couronne hors panier 100 % santé et s’étonne de son reste à charge.",
+    "options": [
+     "Le contrat aurait dû tout rembourser",
+     "Le reste à charge zéro dépend du panier d’équipements choisi, pas du niveau de garantie",
+     "C’est une erreur de la Sécurité sociale"
+    ],
+    "correct": 1,
+    "expl": "La Sécurité sociale verse la même chose des deux côtés : c’est le rôle du contrat qui change selon le panier."
+   },
+   {
+    "type": "check",
+    "q": "Quelles pratiques exposent l’employeur à un redressement ? (plusieurs réponses)",
+    "options": [
+     "Accepter une dispense d’adhésion sans conserver le justificatif",
+     "Réserver la couverture à une catégorie non objective",
+     "Financer 60 % de la cotisation du socle",
+     "Conserver un contrat non mis en conformité avec le cahier des charges responsable"
+    ],
+    "correct": [
+     0,
+     1,
+     3
+    ],
+    "expl": "Financer plus de 50 % est autorisé — c’est un choix de l’entreprise, dans la limite des plafonds d’exonération."
+   }
+  ]
+ }
+};
+
+function OUTILS(){
+  var ids = ['o-frais','o-br','o-taux','o-gar','o-pf','o-hp'];
+  function n(id){ var e=document.getElementById(id); return e.type==='checkbox'?e.checked:parseFloat(String(e.value).replace(',','.')); }
+  function eur(x){ return (Math.round(x*100)/100).toFixed(2).replace('.',',') + ' €'; }
+  function calc(){
+    var frais=n('o-frais'), br=n('o-br'), taux=n('o-taux')/100, gar=n('o-gar')/100,
+        pf=n('o-pf'), hp=n('o-hp');
+    if(isNaN(frais)||isNaN(br)||isNaN(taux)||isNaN(gar)) return;
+    var amoParcours = taux*br;
+    var minoration = hp ? Math.min(0.40*br, 10.60) : 0;
+    var amo = Math.max(0, amoParcours - minoration);
+    var verse = Math.max(0, amo - (pf?2:0));
+    var garTot = gar*br;
+    var amc = Math.max(0, Math.min(garTot - amoParcours, frais - amo));
+    var rac = Math.max(0, frais - verse - amc);
+    document.getElementById('r-amo').textContent = eur(verse);
+    document.getElementById('r-amc').textContent = eur(amc);
+    document.getElementById('r-rac').textContent = eur(rac);
+    var note = 'Garantie mobilisable : ' + eur(garTot) + ' (dont ' + eur(amoParcours) + ' déjà versés au titre de la Sécurité sociale).';
+    if(hp) note += ' Hors parcours, la minoration de ' + eur(minoration) + ' reste à la charge de l’assuré : le contrat responsable n’a pas le droit de la compenser.';
+    if(pf) note += ' La participation forfaitaire de 2 € est retenue sur le versement de la Sécurité sociale et n’est jamais remboursable.';
+    document.getElementById('r-note').textContent = note;
+  }
+  ids.forEach(function(id){
+    var e=document.getElementById(id);
+    if(e){ e.addEventListener('input', calc); e.addEventListener('change', calc); }
+  });
+  calc();
+}
+
+
+(function(){
+  var etat = {};           // id atelier -> {valide:bool, score:int, total:int}
+  var ids = Object.keys(ATELIERS);
+
+  function el(tag, cls, html){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function pointsItem(it){ return it.points || 1; }
+
+  function totalAtelier(a){
+    var t = 0; a.items.forEach(function(it){ t += pointsItem(it); }); return t;
+  }
+
+  // ---------- rendu ----------
+  function rendreAtelier(hote, id){
+    var a = ATELIERS[id];
+    hote.className = 'atelier';
+    hote.innerHTML = '';
+    var tot = totalAtelier(a);
+    etat[id] = {valide:false, score:0, total:tot};
+
+    var entete = el('div','entete');
+    entete.appendChild(el('h4', null, a.titre));
+    entete.appendChild(el('span','tag', tot + ' point' + (tot>1?'s':'')));
+    hote.appendChild(entete);
+    if(a.consigne) hote.appendChild(el('div','consigne', a.consigne));
+
+    a.items.forEach(function(it, i){
+      var d = el('div','item');
+      d.dataset.i = i;
+      d.appendChild(el('div','q', (a.items.length>1 ? (i+1)+'. ' : '') + it.q));
+
+      if(it.type === 'radio' || it.type === 'check'){
+        it.options.forEach(function(o, j){
+          var lab = el('label','opt');
+          var inp = document.createElement('input');
+          inp.type = (it.type === 'radio') ? 'radio' : 'checkbox';
+          inp.name = id + '-' + i;
+          inp.value = j;
+          inp.addEventListener('change', function(){
+            if(it.type === 'radio'){
+              d.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('choisi'); });
+            }
+            lab.classList.toggle('choisi', inp.checked);
+            majBouton(id);
+          });
+          lab.appendChild(inp);
+          lab.appendChild(document.createTextNode(' ' + o));
+          d.appendChild(lab);
+        });
+      } else if(it.type === 'select'){
+        var lig = el('div','ligne');
+        var s = document.createElement('select');
+        s.name = id + '-' + i;
+        var vide = document.createElement('option');
+        vide.value = ''; vide.textContent = '— choisir —';
+        s.appendChild(vide);
+        it.options.forEach(function(o, j){
+          var op = document.createElement('option'); op.value = j; op.textContent = o; s.appendChild(op);
+        });
+        s.addEventListener('change', function(){ majBouton(id); });
+        lig.appendChild(s);
+        d.appendChild(lig);
+      } else if(it.type === 'num'){
+        var lig2 = el('div','ligne');
+        var inp2 = document.createElement('input');
+        inp2.type = 'number'; inp2.step = '0.01'; inp2.name = id + '-' + i;
+        inp2.addEventListener('input', function(){ majBouton(id); });
+        lig2.appendChild(inp2);
+        if(it.unite) lig2.appendChild(el('span', null, it.unite));
+        d.appendChild(lig2);
+      }
+      hote.appendChild(d);
+    });
+
+    var pied = el('div','pied-atelier');
+    var b = el('button','btn','Valider cet atelier');
+    b.disabled = true;
+    b.addEventListener('click', function(){ valider(id, hote); });
+    var al = el('div','alerte','Répondez à tous les points avant de valider.');
+    var sc = el('div','score-at','');
+    pied.appendChild(b); pied.appendChild(al); pied.appendChild(sc);
+    hote.appendChild(pied);
+    majBouton(id);
+  }
+
+  function reponseDe(hote, id, i, it){
+    if(it.type === 'radio' || it.type === 'check'){
+      var v = [];
+      hote.querySelectorAll('input[name="' + id + '-' + i + '"]').forEach(function(x){
+        if(x.checked) v.push(parseInt(x.value, 10));
+      });
+      return v;
+    }
+    var n = hote.querySelector('[name="' + id + '-' + i + '"]');
+    if(!n) return null;
+    return n.value === '' ? null : n.value;
+  }
+
+  function complet(hote, id){
+    var a = ATELIERS[id], ok = true;
+    a.items.forEach(function(it, i){
+      var r = reponseDe(hote, id, i, it);
+      if(r === null || (Array.isArray(r) && r.length === 0)) ok = false;
+    });
+    return ok;
+  }
+
+  function majBouton(id){
+    var hote = document.querySelector('[data-atelier="' + id + '"]');
+    if(!hote || etat[id].valide) return;
+    var b = hote.querySelector('.btn');
+    b.disabled = !complet(hote, id);
+    hote.querySelector('.alerte').style.display = b.disabled ? 'inline' : 'none';
+  }
+
+  function memeEnsemble(a, b){
+    if(a.length !== b.length) return false;
+    var x = a.slice().sort(), y = b.slice().sort();
+    return x.every(function(v, i){ return v === y[i]; });
+  }
+
+  function valider(id, hote){
+    if(!complet(hote, id)) return;
+    var a = ATELIERS[id], score = 0;
+
+    a.items.forEach(function(it, i){
+      var d = hote.querySelector('.item[data-i="' + i + '"]');
+      var r = reponseDe(hote, id, i, it);
+      var juste = false;
+
+      if(it.type === 'radio'){
+        juste = (r.length === 1 && r[0] === it.correct);
+        d.querySelectorAll('.opt').forEach(function(lab, j){
+          var inp = lab.querySelector('input');
+          inp.disabled = true;
+          lab.classList.remove('choisi');
+          if(j === it.correct) lab.classList.add('bonne');
+          else if(inp.checked) lab.classList.add('mauvaise');
+        });
+      } else if(it.type === 'check'){
+        juste = memeEnsemble(r, it.correct);
+        d.querySelectorAll('.opt').forEach(function(lab, j){
+          var inp = lab.querySelector('input');
+          inp.disabled = true;
+          lab.classList.remove('choisi');
+          if(it.correct.indexOf(j) >= 0) lab.classList.add('bonne');
+          else if(inp.checked) lab.classList.add('mauvaise');
+        });
+      } else if(it.type === 'select'){
+        juste = (parseInt(r, 10) === it.correct);
+        var s = d.querySelector('select');
+        s.disabled = true;
+        s.style.borderColor = juste ? '#2F7A4F' : '#B23B3B';
+      } else if(it.type === 'num'){
+        var val = parseFloat(String(r).replace(',', '.'));
+        var tol = (it.tol === undefined) ? 0.01 : it.tol;
+        juste = !isNaN(val) && Math.abs(val - it.correct) <= tol + 1e-9;
+        var n = d.querySelector('input');
+        n.disabled = true;
+        n.style.borderColor = juste ? '#2F7A4F' : '#B23B3B';
+      }
+
+      if(juste) score += pointsItem(it);
+      var v = el('span', 'verdict ' + (juste ? 'v-ok' : 'v-ko'), juste ? '✔ juste' : '✘ à revoir');
+      d.querySelector('.q').appendChild(v);
+
+      var attendu = '';
+      if(it.type === 'select' && !juste) attendu = '<b>Réponse attendue :</b> ' + it.options[it.correct] + '<br>';
+      if(it.type === 'num' && !juste){
+        attendu = '<b>Réponse attendue :</b> ' + String(it.correct).replace('.', ',') + (it.unite ? ' ' + it.unite : '') + '<br>';
+      }
+      if(it.expl || attendu) d.appendChild(el('div','expl', attendu + (it.expl || '')));
+    });
+
+    etat[id].valide = true;
+    etat[id].score = score;
+    hote.classList.add('ok');
+    var b = hote.querySelector('.btn');
+    b.disabled = true;
+    b.textContent = 'Atelier validé';
+    hote.querySelector('.alerte').style.display = 'none';
+    hote.querySelector('.score-at').textContent = 'Score : ' + score + ' / ' + etat[id].total;
+    majGlobal();
+  }
+
+  // ---------- suivi global ----------
+  function majGlobal(){
+    var faits = 0, score = 0, total = 0;
+    ids.forEach(function(id){
+      total += etat[id].total;
+      if(etat[id].valide){ faits++; score += etat[id].score; }
+    });
+    document.getElementById('nb-faits').textContent = faits + ' / ' + ids.length;
+    document.getElementById('score-global').textContent = score + ' / ' + total;
+    document.querySelector('.jauge span').style.width = Math.round(100 * faits / ids.length) + '%';
+    if(faits === ids.length) afficherBilan(score, total);
+  }
+
+  function afficherBilan(score, total){
+    var pct = total ? Math.round(100 * score / total) : 0;
+    var coul, mot;
+    if(pct >= 90){ coul = '#2F7A4F'; mot = 'Excellent — les points clés sont acquis.'; }
+    else if(pct >= 70){ coul = '#1F7A5A'; mot = 'Validé — quelques détails à consolider.'; }
+    else if(pct >= 50){ coul = '#B5852A'; mot = 'À consolider — relisez les sections concernées, puis refaites les ateliers.'; }
+    else { coul = '#B23B3B'; mot = 'À retravailler — reprenez la fiche depuis le début.'; }
+
+    var b = document.getElementById('bilan');
+    var h = '<div class="cercle" style="background:' + coul + '"><span class="pct">' + pct +
+            ' %</span><span class="sur">' + score + ' / ' + total + '</span></div>' +
+            '<div class="palier" style="color:' + coul + '">' + mot + '</div>' +
+            '<table><tr><th>Atelier</th><th>Score</th></tr>';
+    ids.forEach(function(id){
+      var e = etat[id];
+      h += '<tr><td>' + ATELIERS[id].titre + '</td><td>' + e.score + ' / ' + e.total + '</td></tr>';
+    });
+    h += '<tr><td><b>Total</b></td><td><b>' + score + ' / ' + total + '</b></td></tr></table>' +
+         '<p style="text-align:center"><button class="btn secondaire" id="rejouer">Tout recommencer</button></p>';
+    b.querySelector('.contenu').innerHTML = h;
+    b.classList.add('on');
+    document.getElementById('rejouer').addEventListener('click', tout);
+    b.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function tout(){
+    document.getElementById('bilan').classList.remove('on');
+    document.querySelectorAll('[data-atelier]').forEach(function(h){
+      rendreAtelier(h, h.dataset.atelier);
+    });
+    majGlobal();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('[data-atelier]').forEach(function(h){
+      rendreAtelier(h, h.dataset.atelier);
+    });
+    majGlobal();
+    document.getElementById('btn-reset').addEventListener('click', tout);
+    if(typeof OUTILS === 'function') OUTILS();
+  });
+})();
+
+</script>
+</body>
+</html>
